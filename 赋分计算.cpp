@@ -3,11 +3,12 @@
 
 #include <iostream>
 #include "赋分计算.h"
-
+#include "stdlib.h"
+#include <algorithm>
 
 int main()
 {
-    SpawnList(95,15,55);
+    SpawnList(95,15,55,100);
     std::cout << "Hello World!\n";
 }
 
