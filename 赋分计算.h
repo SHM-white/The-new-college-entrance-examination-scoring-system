@@ -1,13 +1,16 @@
-#pragma once
+ï»¿#pragma once
 #include "stdlib.h"
 #include <algorithm>
 #include<random>
 #include <chrono>
 #include<ctime>
-#include <math.h>
-#include "OpenXLSX.hpp"
+#include <fstream>
+#include <format>
+#include <string>
+//#include <math.h>
+//#include "OpenXLSX.hpp"
 
-using namespace OpenXLSX;
+//using namespace OpenXLSX;
 
 /*int main() {
 
@@ -21,7 +24,7 @@ using namespace OpenXLSX;
 
 	return 0;
 }*/
-double gaussrand()
+/*double gaussrand()
 {
 	static double V1, V2, S;
 	static int phase = 0;
@@ -45,22 +48,37 @@ double gaussrand()
 	phase = 1 - phase;
 
 	return X;
-}
-int SpawnList(int Max, int Min, int Average_Number,int Length) {
-	if (Length > 512) {
+}*/
+int SpawnList(int range, int Average_Number, int Length,int debug) {
+	/*if (Length > 512) {
 		printf("error");
 		return 0;
 	}
-	double List_1[512]={0};
+	double List_1[Length]={0};*/
+	std::fstream file{};
+	file.open("1.txt");
+	if (!file.is_open()) {
+		printf("error\n");
+		return 0;
+	};
+	if (debug==2) {
+		file << "debug mode\n";
+		printf("done\n");
+		return 0;
+	};
+	file << std::format("åŽŸå§‹åˆ†\tç­‰çº§\tY1\tY2\tT1\tT2\tè½¬æ¢åˆ†\n");
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	//int a = 1;
-	//²úÉúËæ»úÊýÒýÇæ£¬²ÉÓÃtime×÷ÎªÖÖ×Ó£¬ÒÔÈ·±£Ã¿´ÎÔËÐÐ³ÌÐò¶¼»áµÃµ½²»Í¬µÄ½á¹û
+	//äº§ç”Ÿéšæœºæ•°å¼•æ“Žï¼Œé‡‡ç”¨timeä½œä¸ºç§å­ï¼Œä»¥ç¡®ä¿æ¯æ¬¡è¿è¡Œç¨‹åºéƒ½ä¼šå¾—åˆ°ä¸åŒçš„ç»“æžœ
 	static std::default_random_engine e(seed);
-	//²úÉúÕýÌ¬·Ö²¼¶ÔÏó
-	static std::normal_distribution<double> n(Average_Number, sqrt(Max - Min));
-	for (int i = 0; i < Length; i++) {
-		
-		List_1[i] = n(e);//°ÑÒýÇæ×÷Îª²ÎÊý£¬µ÷ÓÃËæ»ú·Ö²¼¶ÔÏó
+	//äº§ç”Ÿæ­£æ€åˆ†å¸ƒå¯¹è±¡
+	static std::normal_distribution<double> n(Average_Number, sqrt(range));
+	for (int i{ 0 }; i < Length; i++) {
+		file<<std::format("{:.0f}\t",n(e));
+		file << std::format("=LOOKUP(1,0/(RANK(A{},A:A)/COUNTA(A:A)>{{0,0.15,0.5,0.85,0.98}}),{{\"A\",\"B\",\"C\",\"D\",\"E\"}})\t",i+2);
+		file << std::format("=VLOOKUP($B{0},åˆ†æ•°åŒºé—´!$A:$E,@COLUMN(åˆ†æ•°åŒºé—´!B:B),0)\t=VLOOKUP($B{0},åˆ†æ•°åŒºé—´!$A:$E,@COLUMN(åˆ†æ•°åŒºé—´!C:C),0)\t=VLOOKUP($B{0},åˆ†æ•°åŒºé—´!$A:$E,@COLUMN(åˆ†æ•°åŒºé—´!D:D),0)\t=VLOOKUP($B{0},åˆ†æ•°åŒºé—´!$A:$E,@COLUMN(åˆ†æ•°åŒºé—´!E:E),0)\t",i+2);
+		file << std::format("=(E{0}*(A{0}-D{0})+F{0}*(C{0}-A{0}))/(C{0}-D{0})\n",i+2);
+		//List_1[i] = n(e);//æŠŠå¼•æ“Žä½œä¸ºå‚æ•°ï¼Œè°ƒç”¨éšæœºåˆ†å¸ƒå¯¹è±¡
 		/*List_1[i] = rand() % 100;
 		if (List_1[i] > Max)
 			List_1[i] = Max;
@@ -68,13 +86,15 @@ int SpawnList(int Max, int Min, int Average_Number,int Length) {
 			List_1[i] = Min;*/
 		//printf("%d\n",List_1[i]);
 	};
+	file.close();
+	printf("success\n");
 	/*while (a) {
 		int Add_Number = 0;
 		for (int i = 0; i < 100; i++) {
 			Add_Number += List_1[i];
 		};
 		float ANumber = Add_Number / static_cast<float>(100);
-		printf("µ±Ç°Æ½¾ùÊýÎª%f\n", ANumber);
+		printf("å½“å‰å¹³å‡æ•°ä¸º%f\n", ANumber);
 		if (ANumber >= (Average_Number - 1) && ANumber <= (Average_Number + 1))
 			a=0;
 		for (int i = 0; i<100; i++) {
@@ -87,8 +107,18 @@ int SpawnList(int Max, int Min, int Average_Number,int Length) {
 		}
 	};*/
 	//std::sort(List_1, List_1+100);
-	for (int i = 0; i < Length; i++) {
+	/*for (int i = 0; i < Length; i++) {
 		printf("%f ", List_1[i]);
-	}
+	}*/
 	return 0;
 };
+/*int PrintToXlsx() {
+	XLDocument doc;
+	doc.open("1.xlsx");
+	auto wks = doc.workbook().worksheet("Sheet1");
+
+	wks.cell("A1").value() = "Hello, OpenXLSX!";
+
+	doc.save();
+	return 0;
+}*/
